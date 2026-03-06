@@ -37,18 +37,19 @@ print(f"R^2: {test_results.r2}")
 # ---- Write metrics to HBase with happybase (using the provided pattern) ----
 # Example data (row_key, column_family:column, value) populated with the metrics
 data = [
-    ('metrics1', 'cf:rmse', str(test_results.rootMeanSquaredError)),
-    ('metrics1', 'cf:r2',   str(test_results.r2)),
+    (b'metrics1', b'cf:rmse', str(test_results.rootMeanSquaredError).encode()),
+    (b'metrics1', b'cf:r2',   str(test_results.r2).encode()),
 ]
 
 # Function to write data to HBase inside each partition
 def write_to_hbase_partition(partition):
     connection = happybase.Connection('master')
     connection.open()
-    table = connection.table('pitching_metrics')  # Update table name
-    for row in partition:
-        row_key, column, value = row
-        table.put(row_key, {column: value})
+    table = connection.table('pitching_metrics') 
+    table.put(b'metrics1', {
+        b'cf:rmse': str(test_results.rootMeanSquaredError).encode(),
+        b'cf:r2':   str(test_results.r2).encode()
+    })
     connection.close()
 
 # Parallelize data and apply the function with foreachPartition
