@@ -6,8 +6,8 @@ import happybase
 # Step 1: Create a Spark session
 spark = SparkSession.builder.appName("MLlib PitchingML Prediction").enableHiveSupport().getOrCreate()
 
-# Step 2: Load the data from the Hive table 'gradesml' into a Spark DataFrame
-pitching_df = spark.sql("SELECT velocity, k_percent FROM pitching_power")
+# Step 2: Load the data from the Hive table 'power_pitching' into a Spark DataFrame
+pitching_df = spark.sql("SELECT velocity, k_percent FROM power_pitching")
 
 # Step 3: Handle null values by either dropping or filling them
 pitching_df = pitching_df.na.drop()  # Drop rows with null values
